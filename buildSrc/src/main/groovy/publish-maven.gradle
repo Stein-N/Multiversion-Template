@@ -2,10 +2,10 @@ plugins {
     id 'maven-publish'
 }
 
-def maven = System.getenv("MavenRepository")
-
 publishing {
-    if (maven != null) {
+    def mavenRepo = System.getenv("MavenRepository") ?: null
+
+    if (mavenRepo != null) {
         publications {
             mavenJava(MavenPublication) {
                 artifactId = "${mod_id}-${project.name}"
@@ -18,12 +18,12 @@ publishing {
         }
 
         repositories {
-            maven { url = maven }
+            maven { url = mavenRepo }
         }
 
         publish.doLast {
             exec {
-                workingDir maven
+                workingDir mavenRepo
                 commandLine 'cmd', '/c', 'git add . && git commit -m "' + "${mod_id}-${project.name} ${version}" + '" && git push'
             }
         }
