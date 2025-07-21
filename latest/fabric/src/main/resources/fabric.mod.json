@@ -19,8 +19,8 @@
   },
   "mixins": [ "${mod_id}.mixins.json" ],
   "depends": {
-    "fabric-api": "*",
-    "fabricloader": "*",
+    "fabric-api": ">=${fabric_api}",
+    "fabricloader": ">=${fabric_loader}",
     "minecraft": "${minecraft_version}",
     "java": ">=${java_version}"
   },

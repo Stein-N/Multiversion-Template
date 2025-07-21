@@ -49,6 +49,13 @@ processResources {
             "mod_id": mod_id,
             "mod_license": mod_license,
             "mod_description": mod_description,
+
+            // Loader Keys
+            "fabric_api": fabric_api,
+            "fabric_loader": fabric_loader,
+            "forge": forge,
+            "neoforge": neoforge
+
     ]
 
     filesMatching(['pack.mcmeta', 'fabric.mod.json', 'META-INF/neoforge.mods.toml', 'META-INF/mods.toml', '*.mixins.json']) {
