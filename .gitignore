@@ -42,5 +42,7 @@ bin/
 ### Game Options ###
 */fabric/runs/client/*
 !*/fabric/runs/client/options.txt
-*/fabric/runs/server
+*/fabric/runs/server/*
+!*/fabric/runs/server/eula.txt
+!*/fabric/runs/server/server.properties
 */fabric/runs/data
