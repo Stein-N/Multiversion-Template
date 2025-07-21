@@ -2,6 +2,9 @@ plugins {
     id 'me.modmuss50.mod-publish-plugin'
 }
 
+def modrinthApi = System.getenv("ModrinthApi");
+def curseforgeApi = System.getenv("CurseforgeApi");
+
 publishMods {
     displayName = file.map { it.asFile.name }
     type = STABLE
@@ -11,14 +14,14 @@ publishMods {
     else changelog = 'NO VALID CHANGELOG FILE FOUND!'
 
     modrinth {
-        accessToken = MODRINTH_API_KEY
+        accessToken = modrinthApi
         projectId = modrinth_id
 
         minecraftVersions.add(minecraft_version)
     }
 
     curseforge {
-        accessToken = CURSEFORGE_API_KEY
+        accessToken = curseforgeApi
         projectId = curseforge_id
 
         clientRequired = true

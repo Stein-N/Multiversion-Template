@@ -2,26 +2,32 @@ plugins {
     id 'maven-publish'
 }
 
-publishing {
-    publications {
-        mavenJava(MavenPublication) {
-            artifactId = "${mod_id}-${project.name}"
-            from components.java
+def maven = System.getenv("MavenRepository")
 
-            pom.withXml {
-                asNode().dependencies.each { it.replaceNode {} }
+publishing {
+    if (maven != null) {
+        publications {
+            mavenJava(MavenPublication) {
+                artifactId = "${mod_id}-${project.name}"
+                from components.java
+
+                pom.withXml {
+                    asNode().dependencies.each { it.replaceNode {} }
+                }
             }
         }
-    }
 
-    repositories {
-        maven { url = MAVEN_REPOSITORY }
-    }
-
-    publish.doLast {
-        exec {
-            workingDir MAVEN_REPOSITORY
-            commandLine 'cmd', '/c', 'git add . && git commit -m "' + "${mod_id}-${project.name} ${version}" + '" && git push'
+        repositories {
+            maven { url = maven }
         }
+
+        publish.doLast {
+            exec {
+                workingDir maven
+                commandLine 'cmd', '/c', 'git add . && git commit -m "' + "${mod_id}-${project.name} ${version}" + '" && git push'
+            }
+        }
+    } else {
+        println("Maven Repository isn't defined!")
     }
 }
