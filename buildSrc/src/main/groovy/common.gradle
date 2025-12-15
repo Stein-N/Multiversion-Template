@@ -12,11 +12,18 @@ java {
     toolchain.languageVersion = JavaLanguageVersion.of(java_version)
 }
 
+idea.module {
+    downloadJavadoc = true
+    downloadSources = true
+}
 
 repositories {
     mavenCentral()
+    mavenLocal()
+
     maven { url 'https://raw.githubusercontent.com/Stein-N/resources/main/maven' }
-    maven {url "https://maven.terraformersmc.com/" }
+    maven { url "https://repo.spongepowered.org/maven" }
+    maven { url "https://maven.terraformersmc.com/" }
 }
 
 tasks.named('javadoc', Javadoc) {

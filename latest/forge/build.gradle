@@ -1,62 +1,50 @@
 plugins {
     id 'loader'
     id 'net.minecraftforge.gradle'
-    id 'org.spongepowered.mixin' version '0.7-SNAPSHOT'
+//    id 'net.minecraftforge.accesstransformers' version '5.0.1'
+    id 'net.minecraftforge.jarjar' version '0.2.3'
+}
+
+repositories {
+    maven minecraft.mavenizer
+    maven fg.forgeMaven
+    maven fg.minecraftLibsMaven
 }
 
 dependencies {
-    minecraft "net.minecraftforge:forge:${minecraft_version}-${forge}"
-    implementation('net.sf.jopt-simple:jopt-simple:5.0.4') { version { strictly '5.0.4' } }
+    implementation minecraft.dependency("net.minecraftforge:forge:${minecraft_version}-${forge}")
+//    annotationProcessor 'net.minecraftforge:eventbus-validator:7.0-beta.10'
 }
 
-mixin {
-    config("${mod_id}.mixins.json")
-}
+minecraft {
+    mappings channel: 'official', version: minecraft_version
 
+//    def at = file('../common/src/main/resources/META-INF/accesstransformer.cfg')
+//    if (at.exists()) accessTransformers = at
+
+    runs {
+        configureEach {
+            workingDir.convention layout.projectDirectory.dir('../common/runs/client')
+
+            systemProperty 'forge.logging.console.level', 'debug'
+            systemProperty 'eventbus.api.strictRuntimeChecks', 'true'
+            args "--mixin.config=${mod_id}.mixins.json"
+        }
+
+        register('client') {
+            systemProperty 'forge.enabledGameTestNamespaces', mod_id
+        }
+    }
+}
 
 jar {
     manifest {
         attributes([
-                'FMLCorePluginContainsFMLMod': 'true',
                 'MixinConfigs': "${mod_id}.mixins.json"
         ])
     }
 }
 
-minecraft {
-    mappings channel: 'official', version: minecraft_version
-    reobf = false
-    copyIdeResources = true //Calls processResources when in dev
-
-    def directory = project.projectDir.parent.split("\\\\").last()
-
-    def at = file('../common/src/main/resources/META-INF/accesstransformer.cfg')
-    if (at.exists()) accessTransformers = [at]
-
-    runs {
-        client {
-            workingDirectory file("../fabric/runs/client")
-            ideaModule "${rootProject.name}.${directory}.${project.name}.main"
-            taskName "Client"
-            mods {
-                modClientRun {
-                    source sourceSets.main
-                }
-            }
-        }
-        server {
-            workingDirectory file("../fabric/runs/server")
-            ideaModule "${rootProject.name}.${directory}.${project.name}.main"
-            taskName "Server"
-            args '--nogui'
-            mods {
-                modServerRun {
-                    source sourceSets.main
-                }
-            }
-        }
-    }
-}
 
 sourceSets.each {
     def dir = layout.buildDirectory.dir("sourcesSets/$it.name")
