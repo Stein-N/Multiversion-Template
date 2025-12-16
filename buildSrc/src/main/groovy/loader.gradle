@@ -4,21 +4,49 @@ plugins {
     id 'java-library'
 }
 
+configurations {
+    commonJava{
+        canBeResolved = true
+    }
+    commonResources{
+        canBeResolved = true
+    }
+}
+
 def directory = project.projectDir.parent.split("\\\\").last()
 
 dependencies {
-    compileOnly(project(":${directory}:common"))
+    compileOnly(project(":${directory}:common")) {
+        capabilities {
+            requireCapability "$group:$mod_id"
+        }
+        def loaderAttribute = Attribute.of('io.github.mcgradleconventions.loader', String)
+        attributes {
+            attribute(loaderAttribute, 'common')
+        }
+    }
+    commonJava project(path: ":${directory}:common", configuration: 'commonJava')
+    commonResources project(path: ":${directory}:common", configuration: 'commonResources')
 }
 
 tasks.named('compileJava', JavaCompile) {
-    source(project(":${directory}:common").sourceSets.main.allSource)
-}
-
-tasks.named('javadoc', Javadoc) {
-    source(project(":${directory}:common").sourceSets.main.allJava)
+    dependsOn(configurations.commonJava)
+    source(configurations.commonJava)
 }
 
 processResources {
-    from project(":${directory}:common").sourceSets.main.resources
-    from file('../common/src/generated')
+    dependsOn(configurations.commonResources)
+    from(configurations.commonResources)
+}
+
+tasks.named('javadoc', Javadoc).configure {
+    dependsOn(configurations.commonJava)
+    source(configurations.commonJava)
+}
+
+tasks.named('sourcesJar', Jar) {
+    dependsOn(configurations.commonJava)
+    from(configurations.commonJava)
+    dependsOn(configurations.commonResources)
+    from(configurations.commonResources)
 }
