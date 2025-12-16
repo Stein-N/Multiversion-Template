@@ -33,7 +33,7 @@ loom {
             server()
             setConfigName("Fabric Server")
             ideConfigGenerated(true)
-            runDir("./common/runs/server")
+            runDir("../common/runs/server")
         }
     }
 }
