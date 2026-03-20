@@ -1,5 +1,6 @@
 pluginManagement {
     repositories {
+        mavenCentral()
         gradlePluginPortal()
         maven { url 'https://maven.fabricmc.net/' }
         maven { url 'https://maven.minecraftforge.net/' }
@@ -14,7 +15,7 @@ plugins {
 
 rootProject.name = 'Multiversion-Template'
 include('latest');
-include('stable');
+//include('stable'); re add when more 26.x versions are available
 
 rootProject.children.each { subproject ->
     def subprojectDir = file(subproject.projectDir)
